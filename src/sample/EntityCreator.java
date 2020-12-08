@@ -15,58 +15,32 @@ import java.net.URL;
 
 public class EntityCreator {
     public static void main(String[] args) throws Exception {
-        getPerson("Дорофеев");
-        getGroup("апмм");
-        getAuditorium("3402");
-    }
-        public static  Person getPerson(String response) throws ParseException, IOException {
-            URL url = null;
-            HttpURLConnection con = null;
-            try {
-                url = new URL("http://raspisanie.spmi.ru/api/search?term="+response+"&type=person");
-                con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            JSONArray jsonArray =(JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-            for (Object person:jsonArray) {
-                System.out.println(new Person((JSONObject) person).toString());
-            }
-            con.disconnect();
-            return null;
-        }
-    public static  Person getGroup(String response) throws ParseException, IOException {
-        URL url = null;
-        HttpURLConnection con = null;
-        try {
-            url = new URL("http://raspisanie.spmi.ru/api/search?term="+response+"&type=group");
-            con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JSONArray jsonArray =(JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-        for (Object person:jsonArray) {
-            System.out.println(new Group((JSONObject) person).toString());
-        }
-        con.disconnect();
-        return null;
+        getJsonArray("Дорофеев",RequestObject.PERSONE);
+        getJsonArray("апмм",RequestObject.GROUP);
+        getJsonArray("3402",RequestObject.AUDITORIUM);
     }
 
-    public static  Person getAuditorium(String response) throws ParseException, IOException {
+    enum RequestObject {
+        PERSONE("&type=person"),
+        GROUP("&type=group"),
+        AUDITORIUM("&type=auditorium");
+        private String query;
+
+        RequestObject(String query) {
+            this.query = query;
+        }
+
+        @Override
+        public String toString() {
+            return query;
+        }
+    }
+
+    public static Person getJsonArray(String response,RequestObject requestObject) throws ParseException, IOException {
         URL url = null;
         HttpURLConnection con = null;
         try {
-            url = new URL("http://raspisanie.spmi.ru/api/search?term="+response+"&type=auditorium");
+            url = new URL("http://raspisanie.spmi.ru/api/search?term=" + response + requestObject);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
         } catch (MalformedURLException e) {
@@ -76,9 +50,9 @@ public class EntityCreator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        JSONArray jsonArray =(JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-        for (Object person:jsonArray) {
-            System.out.println(new Auditorium((JSONObject) person).toString());
+        JSONArray jsonArray = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
+        for (Object person : jsonArray) {
+            System.out.println(new Person((JSONObject) person).toString());
         }
         con.disconnect();
         return null;
