@@ -38,7 +38,7 @@ public class EntityCreator {
         }
     }
 
-    public static JSONArray getJsonArray(String response, RequestObject requestObject) throws ParseException, IOException {
+    public static JSONArray getJsonArray(RequestObject requestObject,String response ) throws ParseException, IOException {
         URL url = null;
         HttpURLConnection con = null;
         try {
