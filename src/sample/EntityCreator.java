@@ -2,7 +2,6 @@ package sample;
 
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -12,18 +11,21 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+//Название класса поменять
 public class EntityCreator {
+    final static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.d");
     public static void main(String[] args) throws Exception {
-        getJsonArray("Дорофеев",RequestObject.PERSONE);
-        getJsonArray("апмм",RequestObject.GROUP);
-        getJsonArray("3402",RequestObject.AUDITORIUM);
+        System.out.println("http://raspisanie.spmi.ru/api/"+RequestObject.SCHEDULE+"/");
     }
 
     enum RequestObject {
-        PERSONE("&type=person"),
-        GROUP("&type=group"),
-        AUDITORIUM("&type=auditorium");
+        PERSON("person"),
+        GROUP("group"),
+        AUDITORIUM("auditorium"),
+        SCHEDULE("schedule");
         private String query;
 
         RequestObject(String query) {
@@ -36,11 +38,11 @@ public class EntityCreator {
         }
     }
 
-    public static Person getJsonArray(String response,RequestObject requestObject) throws ParseException, IOException {
+    public static JSONArray getJsonArray(String response, RequestObject requestObject) throws ParseException, IOException {
         URL url = null;
         HttpURLConnection con = null;
         try {
-            url = new URL("http://raspisanie.spmi.ru/api/search?term=" + response + requestObject);
+            url = new URL("http://raspisanie.spmi.ru/api/search?term=" + response + "&type=" + requestObject);
             con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
         } catch (MalformedURLException e) {
@@ -51,11 +53,26 @@ public class EntityCreator {
             e.printStackTrace();
         }
         JSONArray jsonArray = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-        for (Object person : jsonArray) {
-            System.out.println(new Person((JSONObject) person).toString());
-        }
         con.disconnect();
-        return null;
+        return jsonArray;
     }
 
+    public static JSONArray getJsonArray(RequestObject requestObject, String idRequestObject, LocalDate startDate, LocalDate endDate) throws ParseException, IOException {
+        URL url = null;
+        HttpURLConnection con = null;
+        try {
+            url = new URL("http://raspisanie.spmi.ru/api/"+RequestObject.SCHEDULE+"/" + requestObject + "/" + idRequestObject + "?start=" + startDate.format(DATE_FORMAT) + "&finish=" + endDate.format(DATE_FORMAT) + "&lng=1" );
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JSONArray jsonArray = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
+        con.disconnect();
+        return jsonArray;
+    }
 }
