@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<GridPane alignment="center" hgap="10" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="sample.Controller">
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
@@ -20,12 +19,12 @@
    <children>
       <Pane prefHeight="200.0" prefWidth="234.0">
          <children>
-            <ComboBox editable="true" layoutX="15.0" layoutY="57.0" prefHeight="25.0" prefWidth="206.0" />
-            <DatePicker layoutX="14.0" layoutY="87.0" prefHeight="25.0" prefWidth="206.0" />
-            <DatePicker layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="206.0" />
-            <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="206.0" text="Button" />
+            <ComboBox fx:id="cbAud" editable="true" layoutX="15.0" layoutY="57.0" prefHeight="25.0" prefWidth="206.0" />
+            <DatePicker fx:id="startDate" layoutX="14.0" layoutY="87.0" prefHeight="25.0" prefWidth="206.0" />
+            <DatePicker fx:id="endDate" layoutX="14.0" layoutY="118.0" prefHeight="25.0" prefWidth="206.0" />
+            <Button fx:id="btnCompute" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickBtnCompute" prefHeight="25.0" prefWidth="206.0" text="Вычислить" />
             <Label layoutX="15.0" layoutY="152.0" text="Загруженность аудитории - " />
-            <Label layoutX="177.0" layoutY="152.0" />
+            <Label fx:id="lblAnswer" layoutX="177.0" layoutY="152.0" />
          </children>
       </Pane>
    </children>

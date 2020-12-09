@@ -39,4 +39,8 @@ public class Schedule {
         Schedule sch = new Schedule(jArr, start,end);
         System.out.println(sch.couples.size() / 50.0 * 100 + "%");
     }
+
+    public int getCountCouples() {
+        return couples.size();
+    }
 }
