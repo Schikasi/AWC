@@ -10,9 +10,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Schedule {
-    ArrayList<Couple> couples = new ArrayList<Couple>();
+    private final ArrayList<Couple> couples = new ArrayList<Couple>();
+    private final LocalDate start;
+    private final LocalDate end;
 
-    public Schedule(JSONArray jArr) throws ParseException {
+    public Schedule(JSONArray jArr, LocalDate start, LocalDate end) throws ParseException {
+        this.start = start;
+        this.end = end;
         Couple tmp;
         for (Object jOb : jArr) {
             tmp = new Couple((JSONObject) jOb);
@@ -30,9 +34,9 @@ public class Schedule {
         String aud = new Scanner(System.in).next();
         LocalDate start = LocalDate.of(2020, 9, 1);
         LocalDate end = LocalDate.of(2020, 9, 14);
-        Integer idAud = new Auditorium((JSONObject) EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud).get(0)).id;
+        Integer idAud = new Auditorium((JSONObject) EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud).get(0)).getId();
         JSONArray jArr = EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, idAud.toString(), start, end);
-        Schedule sch = new Schedule(jArr);
+        Schedule sch = new Schedule(jArr, start,end);
         System.out.println(sch.couples.size() / 50.0 * 100 + "%");
     }
 }

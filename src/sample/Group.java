@@ -3,15 +3,9 @@ package sample;
 import org.json.simple.JSONObject;
 
 public class Group {
-    Integer id;
-    String label;
-    String faculty;
-
-    public Group(Integer id, String label, String faculty) {
-        this.id = id;
-        this.label = label;
-        this.faculty = faculty;
-    }
+    private final  Integer id;
+    private final  String label;
+    private final  String faculty;
 
     public Group(JSONObject group) {
         this.id = Integer.parseInt(group.get("id").toString());

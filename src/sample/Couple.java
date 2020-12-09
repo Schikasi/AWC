@@ -1,31 +1,29 @@
 package sample;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 public class Couple {
-    String discipline;
-    DayOfWeek dayOfWeek;
-    Integer lessonNumber;
-    ArrayList<String> groups = new ArrayList<String>(1);
-    String lecturer;
-    LocalDate date;
+    private final String discipline;
+    private final  DayOfWeek dayOfWeek;
+    private final  Integer lessonNumber;
+    private ArrayList<String> groups = new ArrayList<String>(1);
+    private final  String lecturer;
+    private final  LocalDate date;
 
     public Couple(JSONObject jOb) throws ParseException {
         this.discipline = jOb.get("discipline").toString();
-        this.date = LocalDate.parse(jOb.get("date").toString(),EntityCreator.DATE_FORMAT);
+        this.date = LocalDate.parse(jOb.get("date").toString(), EntityCreator.DATE_FORMAT);
         this.dayOfWeek = this.date.getDayOfWeek();
         this.lessonNumber = Integer.parseInt(jOb.get("lessonNumberStart").toString());
-        this.groups.add(( jOb.get("subGroup")==null?jOb.get("group").toString():(jOb.get("subGroup").toString())));
+        //Исправить
+        this.groups.add((jOb.get("subGroup") == null ? jOb.get("group").toString() : (jOb.get("subGroup").toString())));
+
         this.lecturer = jOb.get("lecturer").toString();
     }
 
@@ -42,15 +40,17 @@ public class Couple {
     }
 
     public ArrayList<String> getGroups() {
-        return groups;
+        return (ArrayList<String>)groups.clone();
     }
 
     public String getLecturer() {
         return lecturer;
     }
 
-    public void addGroup(String group){
-        groups.add(group);
+    public void addGroup( String group){
+        if(group!=null) {
+            groups.add(group);
+        }
     }
 
     @Override

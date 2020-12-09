@@ -3,13 +3,13 @@ package sample;
 import org.json.simple.JSONObject;
 
 public class Person {
-    String name;
-    String faculty;
-    Integer id;
 
-    public Person(String name, Integer id) {
-        this.name = name;
-        this.id = id;
+    private final String name;
+    private final String faculty;
+    private final Integer id;
+
+    public String getFaculty() {
+        return faculty;
     }
 
     public String getName() {

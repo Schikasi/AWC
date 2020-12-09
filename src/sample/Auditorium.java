@@ -3,9 +3,9 @@ package sample;
 import org.json.simple.JSONObject;
 
 public class Auditorium {
-    Integer id;
-    String label;
-    String type;
+    private final Integer id;
+    private final String label;
+    private final String type;
 
     public Auditorium(JSONObject auditorium) {
         this.id = Integer.parseInt(auditorium.get("id").toString());
@@ -20,5 +20,17 @@ public class Auditorium {
                 ", label='" + label + '\'' +
                 ", type='" + type + '\'' +
                 '}';
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getType() {
+        return type;
     }
 }

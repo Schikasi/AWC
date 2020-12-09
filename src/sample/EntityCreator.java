@@ -14,12 +14,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-//Название класса поменять
+//!Название класса поменять
 public class EntityCreator {
     final static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.d");
-    public static void main(String[] args) throws Exception {
-        System.out.println("http://raspisanie.spmi.ru/api/"+RequestObject.SCHEDULE+"/");
-    }
 
     enum RequestObject {
         PERSON("person"),
