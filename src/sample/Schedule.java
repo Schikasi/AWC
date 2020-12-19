@@ -11,12 +11,12 @@ import java.util.Scanner;
 
 public class Schedule {
     private final ArrayList<Couple> couples = new ArrayList<Couple>();
-    private final LocalDate start;
-    private final LocalDate end;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
 
-    public Schedule(JSONArray jArr, LocalDate start, LocalDate end) throws ParseException {
-        this.start = start;
-        this.end = end;
+    public Schedule(JSONArray jArr, LocalDate startDate, LocalDate endDate) throws ParseException {
+        this.startDate = startDate;
+        this.endDate = endDate;
         Couple tmp;
         for (Object jOb : jArr) {
             tmp = new Couple((JSONObject) jOb);
@@ -37,10 +37,19 @@ public class Schedule {
         Integer idAud = new Auditorium((JSONObject) EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud).get(0)).getId();
         JSONArray jArr = EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, idAud.toString(), start, end);
         Schedule sch = new Schedule(jArr, start,end);
-        System.out.println(sch.couples.size() / 50.0 * 100 + "%");
+        ScheduleAnalyzer scheduleAnalyzer = new ScheduleAnalyzer(sch);
+        System.out.println(scheduleAnalyzer.getWorkloadPercent());
     }
 
     public int getCountCouples() {
         return couples.size();
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 }
