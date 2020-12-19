@@ -51,7 +51,11 @@ public class Controller {
             if(end.compareTo(start)>=0){
                 JSONArray jArr = EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud.getId().toString(), start, end);
                 Schedule sch = new Schedule(jArr, start,end);
-                lblAnswer.setText(sch.getCountCouples() / 50.0 * 100 + "%");
+                Integer first_week = (8-start.getDayOfWeek().getValue());
+                Integer last_week = (end.getDayOfWeek().getValue());
+                Integer mid_week = end.compareTo(start)-first_week-last_week+1;
+                Integer countCouple = ((first_week-2>0?first_week-2:0)+(last_week>6?6:last_week)+mid_week-mid_week/7*2)*5;
+                lblAnswer.setText(String.format("%.2f %s",sch.getCountCouples() / (double)countCouple * 100,"%") );
             }
         }
     }
