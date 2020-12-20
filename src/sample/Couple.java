@@ -18,7 +18,7 @@ public class Couple {
 
     public Couple(JSONObject jOb) throws ParseException {
         this.discipline = jOb.get("discipline").toString();
-        this.date = LocalDate.parse(jOb.get("date").toString(), EntityCreator.DATE_FORMAT);
+        this.date = LocalDate.parse(jOb.get("date").toString(), ConnectionToAPI.DATE_FORMAT);
         this.dayOfWeek = this.date.getDayOfWeek();
         this.lessonNumber = Integer.parseInt(jOb.get("lessonNumberStart").toString());
         //Исправить

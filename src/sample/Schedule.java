@@ -34,9 +34,14 @@ public class Schedule {
         String aud = new Scanner(System.in).next();
         LocalDate start = LocalDate.of(2020, 9, 1);
         LocalDate end = LocalDate.of(2020, 9, 14);
-        Integer idAud = new Auditorium((JSONObject) EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud).get(0)).getId();
-        JSONArray jArr = EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, idAud.toString(), start, end);
-        Schedule sch = new Schedule(jArr, start,end);
+        ConnectionToAPI cta = new ConnectionToAPI();
+        cta.createResponse(ConnectionToAPI.TypeResponse.SEARCH, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud);
+        cta.openConnection();
+        Integer idAud = new Auditorium((JSONObject) cta.getJsonArray().get(0)).getId();
+        cta.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, idAud.toString(), start, end);
+        cta.openConnection();
+        JSONArray jArr = cta.getJsonArray();
+        Schedule sch = new Schedule(jArr, start, end);
         ScheduleAnalyzer scheduleAnalyzer = new ScheduleAnalyzer(sch);
         System.out.println(scheduleAnalyzer.getWorkloadPercent());
     }

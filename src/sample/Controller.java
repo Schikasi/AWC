@@ -8,8 +8,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.util.StringConverter;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -49,13 +47,12 @@ public class Controller {
         var aud = cbAud.getValue();
         if(aud!=null && start !=null && end !=null){
             if(end.compareTo(start)>=0){
-                JSONArray jArr = EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud.getId().toString(), start, end);
-                Schedule sch = new Schedule(jArr, start,end);
-                Integer first_week = (8-start.getDayOfWeek().getValue());
-                Integer last_week = (end.getDayOfWeek().getValue());
-                Integer mid_week = end.compareTo(start)-first_week-last_week+1;
-                Integer countCouple = ((first_week-2>0?first_week-2:0)+(last_week>6?6:last_week)+mid_week-mid_week/7*2)*5;
-                lblAnswer.setText(String.format("%.2f %s",sch.getCountCouples() / (double)countCouple * 100,"%") );
+                ConnectionToAPI ctapi = new ConnectionToAPI();
+                ctapi.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud.getId().toString(), start, end);
+                ctapi.openConnection();
+                Schedule sch = new Schedule(ctapi.getJsonArray(), start, end);
+                ScheduleAnalyzer analyzer = new ScheduleAnalyzer(sch);
+                lblAnswer.setText(String.format("%.2f %s", analyzer.getWorkloadPercent(), "%"));
             }
         }
     }
@@ -64,9 +61,12 @@ public class Controller {
         String resp = cbAud.getEditor().getText();
         if (resp.length() >= 2) {
             ArrayList<Auditorium> alA = new ArrayList<>();
+            ConnectionToAPI cta = new ConnectionToAPI();
+            cta.createResponse(ConnectionToAPI.TypeResponse.SEARCH, ConnectionToAPI.ObjectResponse.AUDITORIUM,resp);
+            cta.openConnection();
             for (var obj :
-                    EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, resp)) {
-                alA.add(new Auditorium((JSONObject)obj));
+                    cta.getJsonArray()) {
+                alA.add(new Auditorium((JSONObject) obj));
             }
             cbAud.setItems(FXCollections.observableArrayList(alA));
         }
