@@ -82,6 +82,9 @@ public class ConnectionToAPI {
                 if (endDate == null) {
                     throw new IllegalArgumentException("endDate is null");
                 }
+                if (endDate.compareTo(startDate)<0){
+                    throw new IllegalArgumentException("period is wrong");
+                }
                 getRequest = ObjectResponse.SCHEDULE + "/" + objectResponse + "/" + response + "?start=" + startDate.format(DATE_FORMAT) + "&finish=" + endDate.format(DATE_FORMAT) + "&lng=1";
                 break;
         }
