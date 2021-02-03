@@ -21,29 +21,11 @@ public class Schedule {
         for (Object jOb : jArr) {
             tmp = new Couple((JSONObject) jOb);
             if (!couples.isEmpty() && tmp.equals(couples.get(couples.size() - 1))) {
-                couples.get(couples.size() - 1).addGroup(tmp.getGroups().get(0));
+                couples.get(couples.size() - 1).addGroup(tmp.getGroups().get(0).getLabel());
             } else {
                 couples.add(tmp);
             }
         }
-    }
-
-    //Тестировал класс
-    public static void main(String[] args) throws IOException, org.json.simple.parser.ParseException, ParseException {
-        System.out.println("Введите аудиторию:");
-        String aud = new Scanner(System.in).next();
-        LocalDate start = LocalDate.of(2020, 9, 1);
-        LocalDate end = LocalDate.of(2020, 9, 14);
-        ConnectionToAPI cta = new ConnectionToAPI();
-        cta.createResponse(ConnectionToAPI.TypeResponse.SEARCH, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud);
-        cta.openConnection();
-        Integer idAud = new Auditorium((JSONObject) cta.getJsonArray().get(0)).getId();
-        cta.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, idAud.toString(), start, end);
-        cta.openConnection();
-        JSONArray jArr = cta.getJsonArray();
-        Schedule sch = new Schedule(jArr, start, end);
-        ScheduleAnalyzer scheduleAnalyzer = new ScheduleAnalyzer(sch);
-        System.out.println(scheduleAnalyzer.getWorkloadPercent());
     }
 
     public int getCountCouples() {
@@ -56,5 +38,24 @@ public class Schedule {
 
     public LocalDate getEndDate() {
         return endDate;
+    }
+
+
+    //Тестировал класс
+    public static void main(String[] args) throws IOException, org.json.simple.parser.ParseException, ParseException {
+        System.out.println("Введите аудиторию:");
+        String aud = new Scanner(System.in).next();
+        LocalDate start = LocalDate.of(2020, 9, 1);
+        LocalDate end = LocalDate.of(2020, 9, 14);
+        ConnectionToAPI cta = new ConnectionToAPI();
+        cta.createResponse(ConnectionToAPI.TypeResponse.SEARCH, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud);
+        cta.makeRequest();
+        Integer idAud = new Auditorium((JSONObject) cta.getJsonArray().get(0)).getId();
+        cta.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, idAud.toString(), start, end);
+        cta.makeRequest();
+        JSONArray jArr = cta.getJsonArray();
+        Schedule sch = new Schedule(jArr, start, end);
+        ScheduleAnalyzer scheduleAnalyzer = new ScheduleAnalyzer(sch);
+        System.out.println(scheduleAnalyzer.getWorkloadPercent());
     }
 }

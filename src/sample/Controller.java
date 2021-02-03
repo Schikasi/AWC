@@ -49,7 +49,7 @@ public class Controller {
             if(end.compareTo(start)>=0){
                 ConnectionToAPI ctapi = new ConnectionToAPI();
                 ctapi.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud.getId().toString(), start, end);
-                ctapi.openConnection();
+                ctapi.makeRequest();
                 Schedule sch = new Schedule(ctapi.getJsonArray(), start, end);
                 ScheduleAnalyzer analyzer = new ScheduleAnalyzer(sch);
                 lblAnswer.setText(String.format("%.2f %s", analyzer.getWorkloadPercent(), "%"));
@@ -63,7 +63,7 @@ public class Controller {
             ArrayList<Auditorium> alA = new ArrayList<>();
             ConnectionToAPI cta = new ConnectionToAPI();
             cta.createResponse(ConnectionToAPI.TypeResponse.SEARCH, ConnectionToAPI.ObjectResponse.AUDITORIUM,resp);
-            cta.openConnection();
+            cta.makeRequest();
             for (var obj :
                     cta.getJsonArray()) {
                 alA.add(new Auditorium((JSONObject) obj));

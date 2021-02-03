@@ -3,6 +3,7 @@ package sample;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 public class ScheduleAnalyzer {
+
     private Schedule schedule;
 
     public ScheduleAnalyzer(Schedule schedule) {
@@ -10,7 +11,7 @@ public class ScheduleAnalyzer {
     }
 
     public double getWorkloadPercent() {
-        int countDays = (int) (DAYS.between(schedule.getEndDate(),schedule.getStartDate()) + 1);
+        int countDays = (int) (DAYS.between(schedule.getStartDate(),schedule.getEndDate()) + 1);
         //Добавляем количество дней до полной недели относительно начала периода и делим на семь
         int countFullWeeks = (countDays + (schedule.getStartDate().getDayOfWeek().getValue() - 1)) / 7;
         //Количество рабочих дней = изначальное количество дней - два выходных * количество полных недель - 1, если последний день периода - сб
