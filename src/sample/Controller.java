@@ -47,10 +47,7 @@ public class Controller {
         var aud = cbAud.getValue();
         if(aud!=null && start !=null && end !=null){
             if(end.compareTo(start)>=0){
-                ConnectionToAPI ctapi = new ConnectionToAPI();
-                ctapi.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud.getId().toString(), start, end);
-                ctapi.makeRequest();
-                Schedule sch = new Schedule(ctapi.getJsonArray(), start, end);
+                Schedule sch = Schedule.tryToGetSchedule(start, end, aud.getLabel());
                 ScheduleAnalyzer analyzer = new ScheduleAnalyzer(sch);
                 lblAnswer.setText(String.format("%.2f %s", analyzer.getWorkloadPercent(), "%"));
             }

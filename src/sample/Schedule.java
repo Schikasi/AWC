@@ -4,27 +4,57 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Schedule {
     private final ArrayList<Couple> couples = new ArrayList<Couple>();
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public Schedule(JSONArray jArr, LocalDate startDate, LocalDate endDate) throws ParseException {
+    private Schedule(JSONArray jArr, LocalDate startDate, LocalDate endDate) throws ParseException {
         this.startDate = startDate;
         this.endDate = endDate;
-        Couple tmp;
         for (Object jOb : jArr) {
-            tmp = new Couple((JSONObject) jOb);
+            var tmp = new Couple((JSONObject) jOb);
             if (!couples.isEmpty() && tmp.equals(couples.get(couples.size() - 1))) {
                 couples.get(couples.size() - 1).addGroup(tmp.getGroups().get(0).getLabel());
             } else {
                 couples.add(tmp);
             }
+        }
+    }
+
+    public static Schedule tryToGetSchedule(LocalDate startDate, LocalDate endDate, String audLabel) {
+        if (startDate == null) throw new NullPointerException("startDate не может быть null");
+        if (endDate == null) throw new NullPointerException("endDate не может быть null");
+        if (DAYS.between(startDate, endDate) < 0)
+            throw new IllegalArgumentException("endDate не может быть больше startDate");
+
+        Auditorium aud = Auditorium.tryToGetAuditorium(audLabel);
+        if (aud.getId() == -1)
+            throw new IllegalArgumentException("Аудитория не найдена");
+
+        Schedule sch = null;
+        try {
+            ConnectionToAPI cta = new ConnectionToAPI();
+            cta.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud.getId().toString(), startDate, endDate);
+            cta.makeRequest();
+            JSONArray jArr = cta.getJsonArray();
+            sch = new Schedule(jArr, startDate, endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            return sch;
         }
     }
 

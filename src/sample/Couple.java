@@ -15,13 +15,25 @@ public class Couple {
     private final Integer lessonNumber;
     private final ArrayList<Group> groups = new ArrayList();
 
+
     public Couple(JSONObject couple) throws ParseException {
+
+        if (!couple.containsKey("discipline"))
+            throw new IllegalArgumentException("Переданный объект не содержит поля discipline");
+        if (!couple.containsKey("date"))
+            throw new IllegalArgumentException("Переданный объект не содержит поля date");
+        if (!couple.containsKey("lessonNumberStart"))
+            throw new IllegalArgumentException("Переданный объект не содержит поля lessonNumberStart");
+        if (!couple.containsKey("subGroup") || !couple.containsKey("group"))
+            throw new IllegalArgumentException("Переданный объект не содержит поля lessonNumberStart");
+        if (!couple.containsKey("lecturer"))
+            throw new IllegalArgumentException("Переданный объект не содержит поля lessonNumberStart");
+
         this.discipline = couple.get("discipline").toString();
         this.date = LocalDate.parse(couple.get("date").toString(), ConnectionToAPI.DATE_FORMAT);
         this.lessonNumber = Integer.parseInt(couple.get("lessonNumberStart").toString());
-        //Исправить
-        addGroup((couple.get("subGroup") == null ? couple.get("group").toString() : (couple.get("subGroup").toString())));
-
+        String group = (couple.get("subGroup") == null ? couple.get("group").toString() : (couple.get("subGroup").toString()));
+        addGroup(group);
         this.lecturer = Person.tryToGetPerson(couple.get("lecturer").toString());
     }
 
