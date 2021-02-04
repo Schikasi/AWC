@@ -8,8 +8,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
-import javafx.util.StringConverter;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -49,9 +47,12 @@ public class Controller {
         var aud = cbAud.getValue();
         if(aud!=null && start !=null && end !=null){
             if(end.compareTo(start)>=0){
-                JSONArray jArr = EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, aud.getId().toString(), start, end);
-                Schedule sch = new Schedule(jArr, start,end);
-                lblAnswer.setText(sch.getCountCouples() / 50.0 * 100 + "%");
+                ConnectionToAPI ctapi = new ConnectionToAPI();
+                ctapi.createResponse(ConnectionToAPI.TypeResponse.SCHEDULE, ConnectionToAPI.ObjectResponse.AUDITORIUM, aud.getId().toString(), start, end);
+                ctapi.makeRequest();
+                Schedule sch = new Schedule(ctapi.getJsonArray(), start, end);
+                ScheduleAnalyzer analyzer = new ScheduleAnalyzer(sch);
+                lblAnswer.setText(String.format("%.2f %s", analyzer.getWorkloadPercent(), "%"));
             }
         }
     }
@@ -60,9 +61,12 @@ public class Controller {
         String resp = cbAud.getEditor().getText();
         if (resp.length() >= 2) {
             ArrayList<Auditorium> alA = new ArrayList<>();
+            ConnectionToAPI cta = new ConnectionToAPI();
+            cta.createResponse(ConnectionToAPI.TypeResponse.SEARCH, ConnectionToAPI.ObjectResponse.AUDITORIUM,resp);
+            cta.makeRequest();
             for (var obj :
-                    EntityCreator.getJsonArray(EntityCreator.RequestObject.AUDITORIUM, resp)) {
-                alA.add(new Auditorium((JSONObject)obj));
+                    cta.getJsonArray()) {
+                alA.add(new Auditorium((JSONObject) obj));
             }
             cbAud.setItems(FXCollections.observableArrayList(alA));
         }
